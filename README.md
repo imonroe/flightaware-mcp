@@ -144,6 +144,7 @@ Options:
   -p, --port <number>         Port to listen on (default: "8080")
   -k, --aeroapi-key <string>  FlightAware AeroAPI key
   -m, --mode <string>         Server mode (tcp or ws) (default: "tcp")
+  -t, --timeout <number>      Request timeout in milliseconds (default: "30000")
   -h, --help                  display help for command
 ```
 
@@ -155,6 +156,7 @@ You can use environment variables instead of command line arguments:
 AEROAPI_KEY=your_api_key
 MCP_SERVER_PORT=8080
 MCP_SERVER_MODE=tcp  # or ws for WebSocket
+MCP_REQUEST_TIMEOUT=30000  # timeout in milliseconds
 ```
 
 ## Usage Examples

@@ -12,6 +12,7 @@ program
   .option('-p, --port <number>', 'Port to listen on', process.env.MCP_SERVER_PORT || '8080')
   .option('-k, --aeroapi-key <string>', 'FlightAware AeroAPI key', process.env.AEROAPI_KEY)
   .option('-m, --mode <string>', 'Server mode (tcp or ws)', process.env.MCP_SERVER_MODE || 'tcp')
+  .option('-t, --timeout <number>', 'Request timeout in milliseconds', process.env.MCP_REQUEST_TIMEOUT || '30000')
   .parse(process.argv);
 
 const options = program.opts();
@@ -24,7 +25,8 @@ if (!options.aeroapiKey) {
 const server = new McpServer({
   port: parseInt(options.port, 10),
   aeroapiKey: options.aeroapiKey,
-  mode: options.mode
+  mode: options.mode,
+  requestTimeout: parseInt(options.timeout, 10)
 });
 
 server.start()
