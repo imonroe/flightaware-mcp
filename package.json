@@ -1,5 +1,5 @@
 {
-  "name": "@imonroe/flightaware-mcp",
+  "name": "flightaware-mcp",
   "version": "0.1.0",
   "description": "MCP server bridging to FlightAware AeroAPI",
   "main": "lib/mcp-server.js",
