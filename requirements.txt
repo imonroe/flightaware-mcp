@@ -1,0 +1,219 @@
+Specifications Document for MCP-to-FlightAware AeroAPI Server
+1. Purpose
+To create an MCP server, runnable via npx, that bridges MCP clients with the FlightAware AeroAPI. The server will interpret MCP-formatted requests, translate them into appropriate AeroAPI queries, and relay results back in MCP-compliant responses.
+
+2. Technology Stack
+Layer
+Choice
+Rationale
+Runtime
+Node.js
+npx compatibility, cross-platform
+MCP Protocol
+Custom/tdlib
+TCP/WS support; JSON-based transmission
+HTTP Client
+native fetch/axios
+Robust HTTP requests to AeroAPI
+Deployment
+npx package
+Run npx <pkg> anywhere, no install
+3. Operational Flow
+Start Server:
+Via npx <package-name> [options].
+Accept MCP Connections:
+Server listens for client connections (TCP or websocket, per MCP spec).
+Receive MCP Request:
+Receives and parses JSON-formatted MCP request.
+Translate Request:
+Maps MCP methods/params to matching AeroAPI endpoints.
+Call AeroAPI:
+Makes authenticated HTTP request to AeroAPI as per docs .
+Format Response:
+Converts AeroAPI JSON to MCP-compliant JSON response.
+Return to MCP Client:
+Sends response back to client over MCP.
+4. MCP Command & API Mapping
+MCP Command
+AeroAPI Endpoint(s)
+Notes
+getFlightByIdent
+/flights/{ident} (GET /v4/flights/{ident})
+ident = flight identifier
+getFlightsForAirport
+/airports/{airport_code}/flights (GET /v4/airports/{code}/flights)
+params: arrivals, departures
+getAircraftByTail
+/aircraft/{tail} (GET /v4/aircraft/{tail})
+getAirportsByRegion
+/airports?country={country}&region={region} (GET /v4/airports)
+supports filters
+getFlightDetails
+/flights/{ident}/details
+Detailed event breakdown
+...
+...
+Extendable per user needs
+Method Mapping is extensible! Suggest reflecting AeroAPI closely for flexibility.
+
+5. Authentication
+AeroAPI Key:
+User will supply via environment variable (AEROAPI_KEY), argument, or config file.
+MCP Authentication:
+Optionally support MCP client authentication.
+6. Configuration
+Via CLI:
+npx flightaware-mcp-server --port=8080 --aeroapi-key=XXX [--mode=tcp|ws]
+Environment variable fallback (e.g., AEROAPI_KEY)
+7. Sample MCP Message Contracts
+Request (from client):
+
+json
+
+Collapse
+Save
+Copy
+1
+2
+3
+4
+5
+6
+7
+⌄
+⌄
+{
+  "id": "req1234",
+  "method": "getFlightByIdent",
+  "params": {
+    "ident": "AAL100"
+  }
+}
+Response (from server):
+
+json
+
+Collapse
+Save
+Copy
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+⌄
+⌄
+{
+  "id": "req1234",
+  "result": {
+    "ident": "AAL100",
+    "origin": "JFK",
+    "destination": "LAX",
+    "status": "enroute"
+    // ... additional flight data
+  }
+}
+Error:
+
+json
+
+Collapse
+Save
+Copy
+1
+2
+3
+4
+5
+6
+7
+⌄
+⌄
+{
+  "id": "req1234",
+  "error": {
+    "code": 401,
+    "message": "Invalid FlightAware API key"
+  }
+}
+8. Deployment & Usage
+Install & Run (one-shot):
+
+Collapse
+Copy
+1
+npx flightaware-mcp-server --port 8080 --aeroapi-key <KEY>
+.env Support:
+
+Collapse
+Copy
+1
+2
+AEROAPI_KEY=xxxx
+MCP_SERVER_PORT=8080
+9. Security Considerations
+API key never logged or echoed.
+Rate limits and error handling for AeroAPI applied and surfaced to client.
+Option for local IP/host ACLs.
+10. Dependencies
+ws (if websocket support)
+axios or native fetch (Node >= 18)
+commander for CLI parsing (optional)
+Lightweight, no persistence.
+11. Extensibility and Roadmap
+Make MCP-to-AeroAPI mapping configurable via a JSON rules/schema file.
+Optionally support caching (memory/lru) for high-frequency queries.
+Add metrics/logging options.
+Plug-in authentication modules.
+12. References
+FlightAware AeroAPI Documentation
+MCP Protocol Overview (based on user or internal documentation)
+13. Appendix: Project Directory Structure
+
+Collapse
+Save
+Copy
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+.
+├── bin/
+│   └── cli.js
+├── lib/
+│   └── mcp-server.js
+│   └── aeroapi.js
+│   └── handlers/
+├── package.json
+├── README.md
+└── .env (optional)
+14. Sample Development Timeline
+Phase
+Tasks
+Duration
+Spec Review
+Finalize protocol mapping & flows
+1 week
+Prototype
+MCP Server skeleton, sample command mapping
+2 weeks
+AeroAPI UX
+Add major endpoints, error handling
+2 weeks
+CLI Packaging
+npx, docs, publish beta
+1 week
+Test & Polish
+Real MCP clients, full error/rate tests
+2 weeks

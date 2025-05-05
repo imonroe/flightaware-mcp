@@ -1,0 +1,54 @@
+{
+  "name": "flightaware-mcp",
+  "version": "0.1.0",
+  "description": "MCP server bridging to FlightAware AeroAPI",
+  "main": "lib/mcp-server.js",
+  "bin": {
+    "flightaware-mcp": "bin/cli.js"
+  },
+  "scripts": {
+    "start": "node bin/cli.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "client": "node examples/test-client.js",
+    "lint": "eslint .",
+    "prepare": "npm run lint"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "examples/",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "flightaware",
+    "aeroapi",
+    "mcp",
+    "aviation",
+    "flight",
+    "tracking",
+    "aircraft"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "commander": "^11.0.0",
+    "dotenv": "^16.3.1",
+    "ws": "^8.14.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
