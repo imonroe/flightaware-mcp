@@ -145,7 +145,13 @@ Options:
   -k, --aeroapi-key <string>  FlightAware AeroAPI key
   -m, --mode <string>         Server mode (tcp or ws) (default: "tcp")
   -t, --timeout <number>      Request timeout in milliseconds (default: "30000")
+  -d, --debug                 Enable debug mode with verbose logging
   -h, --help                  display help for command
+
+Notes:
+  - If you experience timeout errors (MCP error -32001), try increasing the timeout value.
+  - Debug mode will provide detailed logs about requests and timeouts.
+  - For n8n integrations, set a higher timeout value (60000 or more) if needed.
 ```
 
 ### Environment Variables
@@ -156,7 +162,9 @@ You can use environment variables instead of command line arguments:
 AEROAPI_KEY=your_api_key
 MCP_SERVER_PORT=8080
 MCP_SERVER_MODE=tcp  # or ws for WebSocket
-MCP_REQUEST_TIMEOUT=30000  # timeout in milliseconds
+MCP_REQUEST_TIMEOUT=60000  # timeout in milliseconds, increase if experiencing timeouts
+DEBUG=true  # enable debug mode with verbose logging
+LOG_LEVEL=info  # log level (error, warn, info, debug)
 ```
 
 ## Usage Examples
@@ -253,6 +261,39 @@ npm test
 ```bash
 npm run lint
 ```
+
+## Troubleshooting
+
+### Timeout Errors
+
+If you're experiencing timeout errors (`MCP error -32001: Request timed out`), try these solutions:
+
+1. **Increase the timeout value:**
+   ```bash
+   # With command line
+   flightaware-mcp --timeout 60000
+   
+   # With environment variables
+   MCP_REQUEST_TIMEOUT=60000 flightaware-mcp
+   ```
+
+2. **Enable debug mode to get more information:**
+   ```bash
+   flightaware-mcp --debug
+   ```
+
+3. **Check your network connectivity:**
+   - Ensure your server has stable internet access
+   - Check if there are any firewall rules blocking outbound requests
+
+4. **For n8n integration:**
+   - Set a higher timeout value (60000ms or more)
+   - Make sure the MCP server and n8n can communicate properly
+   - Try both TCP and WebSocket modes (`--mode ws` or `--mode tcp`)
+
+5. **Check AeroAPI rate limits:**
+   - FlightAware AeroAPI has rate limits based on your subscription
+   - Enable debug mode to see detailed API response information
 
 ## License
 
